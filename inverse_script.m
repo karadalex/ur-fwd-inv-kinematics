@@ -2,38 +2,63 @@
 % execute forward kinematics script
 forward_script
 
-%% Solve Inverse Kinematics 
+%% Solve Inverse Kinematics Generic
 % Available in workspace: a, d, L, M, M_joints, orient, pos, test_angles
 M_num = eye(4);
 M_num(1:3, 1:3) = orient;
 M_num(1:3, 4) = pos;
-solutions = invKinSym(M, M_joints);
+generalSolutions = invKinSym(M_joints);
+% generalSolutions = invKinNum(M, M_joints);
 
+%% Substitute specific position and orientation (M matrix)
+solutions = generalSolutions;
 for angle = keys(solutions)
     key = char(angle);
     solutions(key) = subs(solutions(key), sym('M', [3 4]), M_num(1:3, 1:4));
 end
 
-%% Substitute and evaluate solutions
 % Helper variables
 th = sym('th', [1, 6]);
 th1 = eval(solutions(char(th(1))));
 th2 = solutions(char(th(2)));
-th3 = solutions(char(th(3)));
+% th3 = solutions(char(th(3)));
 th4 = solutions(char(th(4)));
 th5 = solutions(char(th(5)));
 th6 = solutions(char(th(6)));
-% substitute and evaluate and re-evaluate
+
+%% Substitute and evaluate solutions
 solutions(char(th(1))) = th1;
-solutions(char(th(5))) = eval(subs(th5, th(1), th1));
-solutions(char(th(6))) = eval(subs(th6, {th(1), th(5)}, {th1, th5}));
-solutions(char(th(4))) = eval(subs(th4, {th(1), th(5), th(6)}, {th1, th5, th6}));
-solutions(char(th(4))) = eval(solutions(char(th(4))));
-solutions(char(th(2))) = eval(subs(th2, {th(1), th(5), th(6)}, {th1, th5, th6}));
+
+solutions(char(th(5))) = double(subs(th5, th(1), th1));
+
+solutions(char(th(6))) = eval(subs(th6, th(5), th5));
+solutions(char(th(6))) = eval(subs(th6, th(1), th1));
+solutions(char(th(6))) = eval(solutions(char(th(6))));
+solutions(char(th(6))) = deleteComplexSolutions(solutions(char(th(6))));
+
+solutions(char(th(2))) = eval(subs(th2, th(6), th6));
+solutions(char(th(2))) = eval(subs(th2, th(5), th5));
+solutions(char(th(2))) = eval(subs(th2, th(1), th1));
 solutions(char(th(2))) = eval(solutions(char(th(2))));
-solutions(char(th(3))) = eval(subs(th3, {th(1), th(2), th(4), th(5), th(6)}, {th1, th2, th4, th5, th6}));
+solutions(char(th(2))) = eval(solutions(char(th(2))));
+solutions(char(th(2))) = deleteComplexSolutions(solutions(char(th(2))));
+
+% solutions(char(th(4))) = eval(subs(th4, th(2), th2));
+solutions(char(th(4))) = eval(subs(th4, th(6), th6));
+solutions(char(th(4))) = eval(subs(th4, th(5), th5));
+solutions(char(th(4))) = eval(subs(th4, th(1), th1));
+solutions(char(th(4))) = eval(solutions(char(th(4))));
+solutions(char(th(4))) = eval(solutions(char(th(4))));
+% solutions(char(th(4))) = deleteComplexSolutions(solutions(char(th(4))));
+
+solutions(char(th(3))) = eval(subs(th3, {th(2), th(4)}, {th2, th4}));
+solutions(char(th(3))) = eval(subs(th3, th(6), th6));
+solutions(char(th(3))) = eval(subs(th3, th(5), th5));
+solutions(char(th(3))) = eval(subs(th3, th(1), th1));
 solutions(char(th(3))) = eval(solutions(char(th(3))));
 solutions(char(th(3))) = eval(solutions(char(th(3))));
+solutions(char(th(3))) = eval(solutions(char(th(3))));
+% solutions(char(th(3))) = deleteComplexSolutions(solutions(char(th(3))));
 
 %% Display solutions
 for angle = keys(solutions)
