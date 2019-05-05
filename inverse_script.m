@@ -21,52 +21,53 @@ end
 th = sym('th', [1, 6]);
 th1 = eval(solutions(char(th(1))));
 th2 = solutions(char(th(2)));
-% th3 = solutions(char(th(3)));
+th3 = solutions(char(th(3)));
 th4 = solutions(char(th(4)));
 th5 = solutions(char(th(5)));
 th6 = solutions(char(th(6)));
 
-%% Substitute and evaluate solutions
-solutions(char(th(1))) = th1;
-
-solutions(char(th(5))) = double(subs(th5, th(1), th1));
-
-solutions(char(th(6))) = eval(subs(th6, th(5), th5));
-solutions(char(th(6))) = eval(subs(th6, th(1), th1));
-solutions(char(th(6))) = eval(solutions(char(th(6))));
-solutions(char(th(6))) = deleteComplexSolutions(solutions(char(th(6))));
-
-solutions(char(th(2))) = eval(subs(th2, th(6), th6));
-solutions(char(th(2))) = eval(subs(th2, th(5), th5));
-solutions(char(th(2))) = eval(subs(th2, th(1), th1));
-solutions(char(th(2))) = eval(solutions(char(th(2))));
-solutions(char(th(2))) = eval(solutions(char(th(2))));
-solutions(char(th(2))) = deleteComplexSolutions(solutions(char(th(2))));
-
-% solutions(char(th(4))) = eval(subs(th4, th(2), th2));
-solutions(char(th(4))) = eval(subs(th4, th(6), th6));
-solutions(char(th(4))) = eval(subs(th4, th(5), th5));
-solutions(char(th(4))) = eval(subs(th4, th(1), th1));
-solutions(char(th(4))) = eval(solutions(char(th(4))));
-solutions(char(th(4))) = eval(solutions(char(th(4))));
-% solutions(char(th(4))) = deleteComplexSolutions(solutions(char(th(4))));
-
-solutions(char(th(3))) = eval(subs(th3, {th(2), th(4)}, {th2, th4}));
-solutions(char(th(3))) = eval(subs(th3, th(6), th6));
-solutions(char(th(3))) = eval(subs(th3, th(5), th5));
-solutions(char(th(3))) = eval(subs(th3, th(1), th1));
-solutions(char(th(3))) = eval(solutions(char(th(3))));
-solutions(char(th(3))) = eval(solutions(char(th(3))));
-solutions(char(th(3))) = eval(solutions(char(th(3))));
-% solutions(char(th(3))) = deleteComplexSolutions(solutions(char(th(3))));
-
-%% Display solutions
-for angle = keys(solutions)
-    key = char(angle);
-    disp(key);
-    disp(solutions(key));
+%% Build solutionset
+for i = 0:1:63
+    s = de2bi(i, 6);
+    % s(1): LSB , s(6): MSB
+    th1Sol(i+1) = th1(s(6)+1);
+    th5Sol(i+1) = th5(s(5)+1);
+    th6Sol(i+1) = th6(s(4)+1);
+    th2Sol(i+1) = th2(s(3)+1);
+    th3Sol(i+1) = th3(s(2)+1);
+    th4Sol(i+1) = th4(s(1)+1);
+    
+    thSol = {th1Sol(i+1), th2Sol(i+1), th3Sol(i+1), th4Sol(i+1), th5Sol(i+1), th6Sol(i+1)};
+    th5Sol(i+1) = subs(th5Sol(i+1), th, thSol);
+    
+    th6Sol(i+1) = subs(th6Sol(i+1), th, thSol);
+    th6Sol(i+1) = subs(th6Sol(i+1), th, thSol);
+    
+    th2Sol(i+1) = subs(th2Sol(i+1), th, thSol);
+    th2Sol(i+1) = subs(th2Sol(i+1), th, thSol);
+    th2Sol(i+1) = subs(th2Sol(i+1), th, thSol);
+    
+    th3Sol(i+1) = subs(th3Sol(i+1), th, thSol);
+    th3Sol(i+1) = subs(th3Sol(i+1), th, thSol);
+    th3Sol(i+1) = subs(th3Sol(i+1), th, thSol);
+    th3Sol(i+1) = subs(th3Sol(i+1), th, thSol);
+    
+    th4Sol(i+1) = subs(th4Sol(i+1), th, thSol);
+    th4Sol(i+1) = subs(th4Sol(i+1), th, thSol);
+    th4Sol(i+1) = subs(th4Sol(i+1), th, thSol);
+    th4Sol(i+1) = subs(th4Sol(i+1), th, thSol);
+    th4Sol(i+1) = subs(th4Sol(i+1), th, thSol);
 end
 
+%% Display solutions
+for i = 1:1:64
+    thiSol = [th1Sol(i), th2Sol(i), th3Sol(i), th4Sol(i), th5Sol(i), th6Sol(i)];
+    thiSol = eval(real(thiSol));
+    disp(thiSol);
+end
+
+
 %% Test results
-% test_ik_angles = [];
-% [test_ik_pos,test_ik_orient] = fwdKinPose(M, test_ik_angles(1,:));
+test_ik_angles = [th1Sol(1), th2Sol(1), th3Sol(1), th4Sol(1), th5Sol(1), th6Sol(1)];
+test_ik_angles = eval(real(test_ik_angles));
+[test_ik_pos,test_ik_orient] = fwdKinPose(M, test_ik_angles);
