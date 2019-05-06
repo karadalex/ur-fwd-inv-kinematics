@@ -37,11 +37,16 @@ for i = 0:1:7
     th6Sol(i+1) = th6;
     
     thSol = {th1Sol(i+1), th2Sol(i+1), th3Sol(i+1), th4Sol(i+1), th5Sol(i+1), th6Sol(i+1)};
-    th5Sol(i+1) = eval(real(subs(th5Sol(i+1), th, thSol)));
-    th6Sol(i+1) = eval(real(subs(th6Sol(i+1), th, thSol)));
-    th3Sol(i+1) = eval(real(subs(th3Sol(i+1), th, thSol)));
-    th2Sol(i+1) = eval(real(subs(th2Sol(i+1), th, thSol)));
-    th4Sol(i+1) = eval(real(subs(th4Sol(i+1), th, thSol)));
+    th5Sol(i+1) = subs(th5Sol(i+1), th, thSol);
+    th5Sol(i+1) = eval(real(th5Sol(i+1)));
+    th6Sol(i+1) = subs(th6Sol(i+1), th, thSol);
+    th6Sol(i+1) = eval(real(th6Sol(i+1)));
+    th3Sol(i+1) = subs(th3Sol(i+1), th, thSol);
+    th3Sol(i+1) = eval(real(th3Sol(i+1)));
+    th2Sol(i+1) = subs(th2Sol(i+1), th, thSol);
+    th2Sol(i+1) = eval(real(th2Sol(i+1)));
+    th4Sol(i+1) = subs(th4Sol(i+1), th, thSol);
+    th4Sol(i+1) = eval(real(th4Sol(i+1)));
 end
 
 %% Testing

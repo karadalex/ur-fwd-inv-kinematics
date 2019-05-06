@@ -60,10 +60,12 @@ for i = 0:1:63
 end
 
 %% Display solutions
+thiSol = zeros(64,6);
 for i = 1:1:64
-    thiSol = [th1Sol(i), th2Sol(i), th3Sol(i), th4Sol(i), th5Sol(i), th6Sol(i)];
-    thiSol = eval(real(thiSol));
-    disp(thiSol);
+    thiSol(i, :) = [th1Sol(i), th2Sol(i), th3Sol(i), th4Sol(i), th5Sol(i), th6Sol(i)];
+%     thiSol(i, :) = [th1Sol(i), th5Sol(i), th6Sol(i)];
+    thiSol(i, :) = real(thiSol(i, :));
+    disp(thiSol(i, :));
 end
 
 

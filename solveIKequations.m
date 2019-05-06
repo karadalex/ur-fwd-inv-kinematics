@@ -6,14 +6,14 @@ function [angles, known] = solveIKequations(lhs, rhs, known, angles, epochs)
                 eq = expand(lhs(j,k) - rhs(j,k));
                 eqVars = symvar(eq);
                 unknown = setdiff(eqVars, known);
-                disp(eq);
-                disp(unknown);
+                %disp(eq);
+                %disp(unknown);
                 if length(unknown) == 1
                     eq = rewrite(eq, 'tan');
                     eqSol = solve(eq, unknown);
                     eqSol = simplify(eqSol);
                     angles(char(unknown)) = eqSol;
-                    disp(eqSol);
+                    %disp(eqSol);
                     known = [known, unknown];
                     restart = true;
                     break;
