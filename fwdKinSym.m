@@ -1,5 +1,3 @@
-% warning('off', 'all')
-
 function [M_total, M_joints] = fwdKinSym(L, d, a)
     % Create/convert to symbolic variables
     L = sym(L);
@@ -13,16 +11,25 @@ function [M_total, M_joints] = fwdKinSym(L, d, a)
     M_total = sym(M_total);
     
     for i = 1:1:6
-      disp(i)
-      M_joints(:,:,i) = [
-        [cos(theta(i)), -sin(theta(i)), 0, L(i)],
-        [sin(theta(i)) * cos(a(i)), cos(theta(i)) * cos(a(i)), -sin(a(i)), -sin(a(i)) * d(i)],
-        [sin(theta(i)) * sin(a(i)), cos(theta(i)) * sin(a(i)), cos(a(i)), cos(a(i)) * d(i)],
-        [0, 0, 0, 1]
+      TL = sym(eye(4));
+      TL(1,4) = L(i);
+      Td = sym(eye(4));
+      Td(3,4) = d(i);
+      Rth = [
+        [cos(theta(i)), -sin(theta(i)), 0, 0],
+        [sin(theta(i)), cos(theta(i)), 0, 0],
+        [0,             0,             1, 0],
+        [0,             0,             0, 1],
       ];
+      Ra = [
+        [1, 0,         0,          0],
+        [0, cos(a(i)), -sin(a(i)), 0],
+        [0, sin(a(i)), cos(a(i)),  0],
+        [0, 0,         0,          1],
+      ];
+      M_joints(:,:,i) = Td * Rth * TL * Ra;
       disp(M_joints(:,:,i))
       M_total = simplify(M_total) * M_joints(:,:,i);
     end
     M_total = simplify(M_total);
 end
-
