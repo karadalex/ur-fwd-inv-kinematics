@@ -14,7 +14,9 @@ M_6_TCP = pose(0, 0, 0.1606, 0, 0, 0);
 %M_6_TCP = pose(0, 0, 0, 0, 0, 0);
 M_0_6 = inv(M_U_0) * M_U_TCP * inv(M_6_TCP);
 
-th = invKin(M_0_6, M_joints, L, d, a);
+%th = invKin(M_0_6, M_joints, L, d, a);
+thSym = invKinSym(M_joints, L, d, a);
+th = eval(subs(thSym, sym('M', [4 4]), M_0_6));
 
 
 %% Solutions validation
