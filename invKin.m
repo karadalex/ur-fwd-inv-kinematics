@@ -82,6 +82,9 @@ for i=1:8
     M_2_3 = eval(subs(M_joints(:,:,3), sym('th3'), th3));
     M_3_4 = invTransf(M_2_3) * invTransf(M_1_2) * M_1_4;
     th(4, i) = atan2(M_3_4(2,1), M_3_4(1,1));
+    
+    % Wrap angles to [-pi,pi] range
+    th = wrapToPi(th);
 end
 end
 
